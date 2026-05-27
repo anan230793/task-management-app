@@ -11,6 +11,11 @@ import {
 } from '../types/task';
 import { toastError, toastSuccess } from '../utils/toast';
 
+const getEffectiveSearch = (search: string): string => {
+  const trimmed = search.trim();
+  return trimmed.length >= 3 ? trimmed : '';
+};
+
 const updateOptimisticList = (
   current: TasksResponse | undefined,
   updater: (tasks: Task[]) => Task[],
@@ -46,12 +51,14 @@ const invalidateTaskQueries = async (
 };
 
 export const useTasks = (status: StatusFilter, search: string) => {
+  const effectiveSearch = getEffectiveSearch(search);
+
   return useQuery({
-    queryKey: queryKeys.tasks.list(status, search),
+    queryKey: queryKeys.tasks.list(status, effectiveSearch),
     queryFn: () =>
       getTasks({
         status: status === 'ALL' ? undefined : status,
-        search: search || undefined,
+        search: effectiveSearch || undefined,
       }),
   });
 };
@@ -67,7 +74,8 @@ export const useTaskById = (taskId: string) => {
 
 export const useCreateTask = (status: StatusFilter, search: string) => {
   const queryClient = useQueryClient();
-  const queryKey = queryKeys.tasks.list(status, search);
+  const effectiveSearch = getEffectiveSearch(search);
+  const queryKey = queryKeys.tasks.list(status, effectiveSearch);
 
   return useMutation({
     mutationFn: (payload: CreateTaskInput) => createTask(payload),
@@ -105,7 +113,8 @@ export const useCreateTask = (status: StatusFilter, search: string) => {
 
 export const useUpdateTask = (status: StatusFilter, search: string) => {
   const queryClient = useQueryClient();
-  const queryKey = queryKeys.tasks.list(status, search);
+  const effectiveSearch = getEffectiveSearch(search);
+  const queryKey = queryKeys.tasks.list(status, effectiveSearch);
 
   return useMutation({
     mutationFn: ({ taskId, payload }: { taskId: string; payload: UpdateTaskInput }) =>
@@ -139,7 +148,8 @@ export const useUpdateTask = (status: StatusFilter, search: string) => {
 
 export const useDeleteTask = (status: StatusFilter, search: string) => {
   const queryClient = useQueryClient();
-  const queryKey = queryKeys.tasks.list(status, search);
+  const effectiveSearch = getEffectiveSearch(search);
+  const queryKey = queryKeys.tasks.list(status, effectiveSearch);
 
   return useMutation({
     mutationFn: (taskId: string) => deleteTask(taskId),

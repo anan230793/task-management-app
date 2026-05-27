@@ -20,7 +20,7 @@ export interface TaskQueryInput {
 }
 
 const ensureOwnership = async (taskId: string, userId: string) => {
-  const task = await Task.findOne({ _id: taskId, user: userId });
+  const task = await Task.findOne({ _id: taskId, user: userId, isDeleted: false });
 
   if (!task) {
     throw new AppError('Task not found', 404);
@@ -35,7 +35,10 @@ export const createTask = async (userId: string, payload: TaskInput) => {
 };
 
 export const getTasks = async (userId: string, query: TaskQueryInput) => {
-  const filter: Record<string, unknown> = { user: new mongoose.Types.ObjectId(userId) };
+  const filter: Record<string, unknown> = {
+    user: new mongoose.Types.ObjectId(userId),
+    isDeleted: false,
+  };
 
   if (query.status) {
     filter.status = query.status;
@@ -58,10 +61,11 @@ export const getTaskById = async (taskId: string, userId: string) => {
 export const updateTask = async (taskId: string, userId: string, payload: TaskUpdateInput) => {
   await ensureOwnership(taskId, userId);
 
-  const updatedTask = await Task.findOneAndUpdate({ _id: taskId, user: userId }, payload, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedTask = await Task.findOneAndUpdate(
+    { _id: taskId, user: userId, isDeleted: false },
+    payload,
+    { new: true, runValidators: true },
+  );
 
   if (!updatedTask) {
     throw new AppError('Task not found', 404);
@@ -71,9 +75,13 @@ export const updateTask = async (taskId: string, userId: string, payload: TaskUp
 };
 
 export const deleteTask = async (taskId: string, userId: string) => {
-  const deleted = await Task.findOneAndDelete({ _id: taskId, user: userId });
+  const task = await Task.findOneAndUpdate(
+    { _id: taskId, user: userId, isDeleted: false },
+    { isDeleted: true, deletedAt: new Date() },
+    { new: true },
+  );
 
-  if (!deleted) {
+  if (!task) {
     throw new AppError('Task not found', 404);
   }
 };

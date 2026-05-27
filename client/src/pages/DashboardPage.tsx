@@ -12,7 +12,6 @@ import { Button } from '../components/ui/Button';
 import { EmptyState } from '../components/ui/EmptyState';
 import { PageContainer } from '../components/ui/PageContainer';
 import { useDebounce } from '../hooks/useDebounce';
-import { useTaskStats } from '../hooks/useTaskStats';
 import {
   useCreateTask,
   useDeleteTask,
@@ -37,7 +36,7 @@ const DashboardPage = () => {
   const debouncedSearch = useDebounce(search, 400);
 
   const { data, isLoading, isError } = useTasks(status, debouncedSearch);
-  const { total, pending, completed, isLoading: isStatsLoading } = useTaskStats();
+  const { data: allData } = useTasks('ALL', '');
 
   const {
     data: taskDetailData,
@@ -51,6 +50,11 @@ const DashboardPage = () => {
   const deleteTaskMutation = useDeleteTask(status, debouncedSearch);
 
   const tasks = useMemo(() => data?.tasks ?? [], [data?.tasks]);
+
+  const allTasks = useMemo(() => allData?.tasks ?? [], [allData?.tasks]);
+  const totalCount = allTasks.length;
+  const pendingCount = useMemo(() => allTasks.filter((t) => t.status === 'PENDING').length, [allTasks]);
+  const completedCount = useMemo(() => allTasks.filter((t) => t.status === 'COMPLETED').length, [allTasks]);
   const isSearchActive = debouncedSearch.trim().length > 0;
 
   useEffect(() => {
@@ -90,10 +94,10 @@ const DashboardPage = () => {
         </div>
 
         <DashboardStats
-          total={total}
-          pending={pending}
-          completed={completed}
-          isLoading={isStatsLoading}
+          total={totalCount}
+          pending={pendingCount}
+          completed={completedCount}
+          isLoading={isLoading}
         />
 
         <TaskFilters

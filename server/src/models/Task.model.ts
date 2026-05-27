@@ -24,9 +24,27 @@ const taskSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
+    toJSON: {
+      transform: (_doc, ret) => {
+        const sanitized = ret as Record<string, unknown>;
+        delete sanitized.__v;
+        delete sanitized.isDeleted;
+        delete sanitized.deletedAt;
+        return ret;
+      },
+    },
   },
 );
 

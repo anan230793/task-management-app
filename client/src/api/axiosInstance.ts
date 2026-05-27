@@ -21,9 +21,12 @@ axiosInstance.interceptors.response.use(
 
     const status = error.response?.status;
     const requestUrl = error.config?.url;
-    const isSessionCheck = requestUrl?.includes('/auth/me');
+    const isAuthRoute =
+      requestUrl?.includes('/auth/me') ||
+      requestUrl?.includes('/auth/login') ||
+      requestUrl?.includes('/auth/register');
 
-    if (status === 401 && !isSessionCheck) {
+    if (status === 401 && !isAuthRoute) {
       queryClient.clear();
       window.location.replace('/login');
     }

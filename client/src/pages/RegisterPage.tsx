@@ -48,6 +48,7 @@ const RegisterPage = () => {
           placeholder="Create a password"
           autoComplete="new-password"
           error={errors.password}
+          hint="Must contain uppercase, lowercase, number, and special character (e.g. Test@123)"
           registration={register('password')}
         />
 

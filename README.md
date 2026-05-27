@@ -2,8 +2,6 @@
 
 A production-ready MERN task management application with JWT authentication, full task CRUD, filtering, and search.
 
-[![Live Demo](https://img.shields.io/badge/demo-coming%20soon-00684A)](https://github.com/anan230793/task-management-app)
-
 ## Features
 
 - User registration, login, and logout with secure httpOnly cookies
@@ -85,34 +83,3 @@ npm run dev
 
 - Frontend: http://localhost:5173
 - API: http://localhost:5000/api
-
-## API Routes
-
-| Method | Endpoint             | Auth | Description                 |
-| ------ | -------------------- | ---- | --------------------------- |
-| GET    | `/api/health`        | No   | Health check                |
-| POST   | `/api/auth/register` | No   | Register user               |
-| POST   | `/api/auth/login`    | No   | Login user                  |
-| POST   | `/api/auth/logout`   | No   | Clear auth cookie           |
-| GET    | `/api/auth/me`       | Yes  | Current user                |
-| GET    | `/api/tasks`         | Yes  | List tasks (filter, search) |
-| POST   | `/api/tasks`         | Yes  | Create task                 |
-| GET    | `/api/tasks/:id`     | Yes  | Get task by ID              |
-| PUT    | `/api/tasks/:id`     | Yes  | Update task                 |
-| DELETE | `/api/tasks/:id`     | Yes  | Delete task                 |
-
-## Authentication Flow
-
-```mermaid
-sequenceDiagram
-  participant Client
-  participant API
-  participant DB
-
-  Client->>API: POST /auth/login
-  API->>DB: Verify credentials
-  API-->>Client: Set httpOnly JWT cookie
-  Client->>API: GET /auth/me (with cookie)
-  API-->>Client: User profile
-  Client->>API: CRUD /tasks (with cookie)
-```
