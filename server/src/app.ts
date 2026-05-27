@@ -4,9 +4,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
-import { env } from './src/config/env';
-import routes from './src/routes';
-import { errorMiddleware, notFoundMiddleware } from './src/middleware/errorHandler';
+import { env } from './config/env';
+import routes from './routes';
+import { errorMiddleware, notFoundMiddleware } from './middleware/errorHandler';
 
 const app = express();
 
