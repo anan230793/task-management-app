@@ -4,7 +4,10 @@
 
 @layer base {
   body {
-    @apply bg-surface-page text-ink-primary antialiased;
+    background-color: #f9fafb;
+    color: #1c1c1c;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
